@@ -1,6 +1,11 @@
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 import Icon from "@/components/ui/icon";
 import { useState } from "react";
 
@@ -69,6 +74,21 @@ const Index = () => {
   ];
 
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [newGreeting, setNewGreeting] = useState({ author: "", text: "" });
+  const { toast } = useToast();
+
+  const handleSubmitGreeting = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newGreeting.author.trim() && newGreeting.text.trim()) {
+      toast({
+        title: "Поздравление отправлено!",
+        description: "Спасибо за ваши теплые слова. Они будут добавлены в газету.",
+      });
+      setNewGreeting({ author: "", text: "" });
+      setIsFormOpen(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#F1F1F1] py-8 px-4">
@@ -98,9 +118,62 @@ const Index = () => {
           <Separator className="my-8 bg-black h-0.5" />
 
           <section className="mb-12 animate-fade-in">
-            <h3 className="text-3xl font-heading font-bold mb-6 text-center border-y-2 border-black py-3">
-              ПОЗДРАВЛЕНИЯ ОТ ДРУЗЕЙ
-            </h3>
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-3xl font-heading font-bold text-center border-y-2 border-black py-3 flex-1">
+                ПОЗДРАВЛЕНИЯ ОТ ДРУЗЕЙ
+              </h3>
+            </div>
+            
+            <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+              <DialogTrigger asChild>
+                <div className="flex justify-center mb-6">
+                  <Button 
+                    className="bg-black text-white hover:bg-gray-800 border-2 border-black font-heading text-lg px-8 py-6 rounded-none"
+                  >
+                    <Icon name="Plus" className="mr-2" size={20} />
+                    Добавить поздравление
+                  </Button>
+                </div>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl border-4 border-black rounded-none">
+                <div className="p-4">
+                  <h4 className="text-2xl font-heading font-bold mb-4 text-center border-b-2 border-black pb-2">
+                    ОТПРАВИТЬ ПОЗДРАВЛЕНИЕ
+                  </h4>
+                  <form onSubmit={handleSubmitGreeting} className="space-y-4">
+                    <div>
+                      <Label htmlFor="author" className="font-heading text-lg">Ваше имя</Label>
+                      <Input
+                        id="author"
+                        value={newGreeting.author}
+                        onChange={(e) => setNewGreeting({ ...newGreeting, author: e.target.value })}
+                        className="mt-2 border-2 border-black rounded-none font-sans text-lg"
+                        placeholder="Иван Иванов"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="text" className="font-heading text-lg">Ваше поздравление</Label>
+                      <Textarea
+                        id="text"
+                        value={newGreeting.text}
+                        onChange={(e) => setNewGreeting({ ...newGreeting, text: e.target.value })}
+                        className="mt-2 border-2 border-black rounded-none font-sans text-lg min-h-[150px]"
+                        placeholder="Напишите теплые слова имениннику..."
+                        required
+                      />
+                    </div>
+                    <Button 
+                      type="submit"
+                      className="w-full bg-black text-white hover:bg-gray-800 border-2 border-black font-heading text-lg py-6 rounded-none"
+                    >
+                      Отправить поздравление
+                    </Button>
+                  </form>
+                </div>
+              </DialogContent>
+            </Dialog>
+
             <div className="grid md:grid-cols-2 gap-6">
               {greetings.map((greeting, index) => (
                 <Card key={index} className="p-6 border-2 border-black shadow-none rounded-none">
