@@ -1,5 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import Icon from "@/components/ui/icon";
+import { useState } from "react";
 
 const Index = () => {
   const greetings = [
@@ -37,6 +40,35 @@ const Index = () => {
     "Новых впечатлений, путешествий и открытий",
     "Встреч с интересными людьми и верных друзей рядом"
   ];
+
+  const photos = [
+    {
+      url: "https://cdn.poehali.dev/projects/053fbae1-5c0e-47d3-a097-dd8669db66e3/files/9e7f7b5e-3654-4255-9a9f-614c14a5dc91.jpg",
+      caption: "День рождения с друзьями"
+    },
+    {
+      url: "https://cdn.poehali.dev/projects/053fbae1-5c0e-47d3-a097-dd8669db66e3/files/93d2702c-5425-435a-906b-f0bbe98d90c4.jpg",
+      caption: "Летнее путешествие на море"
+    },
+    {
+      url: "https://cdn.poehali.dev/projects/053fbae1-5c0e-47d3-a097-dd8669db66e3/files/f342db7d-d2dd-4b95-b7d9-d170763811fe.jpg",
+      caption: "Незабываемый концерт"
+    },
+    {
+      url: "https://cdn.poehali.dev/projects/053fbae1-5c0e-47d3-a097-dd8669db66e3/files/9e7f7b5e-3654-4255-9a9f-614c14a5dc91.jpg",
+      caption: "Веселые моменты"
+    },
+    {
+      url: "https://cdn.poehali.dev/projects/053fbae1-5c0e-47d3-a097-dd8669db66e3/files/93d2702c-5425-435a-906b-f0bbe98d90c4.jpg",
+      caption: "Приключения вместе"
+    },
+    {
+      url: "https://cdn.poehali.dev/projects/053fbae1-5c0e-47d3-a097-dd8669db66e3/files/f342db7d-d2dd-4b95-b7d9-d170763811fe.jpg",
+      caption: "Яркие воспоминания"
+    }
+  ];
+
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
 
   return (
     <div className="min-h-screen bg-[#F1F1F1] py-8 px-4">
@@ -111,15 +143,31 @@ const Index = () => {
               ГАЛЕРЕЯ ВОСПОМИНАНИЙ
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {[1, 2, 3, 4, 5, 6].map((_, index) => (
-                <div key={index} className="aspect-square border-4 border-black bg-gray-200 relative overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-4xl">📷</span>
-                  </div>
-                </div>
+              {photos.map((photo, index) => (
+                <Dialog key={index}>
+                  <DialogTrigger asChild>
+                    <div className="aspect-square border-4 border-black bg-gray-200 relative overflow-hidden cursor-pointer hover:opacity-90 transition-opacity group">
+                      <img 
+                        src={photo.url} 
+                        alt={photo.caption}
+                        className="w-full h-full object-cover grayscale"
+                      />
+                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center">
+                        <Icon name="Expand" className="text-white opacity-0 group-hover:opacity-100 transition-opacity" size={32} />
+                      </div>
+                    </div>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-4xl">
+                    <img 
+                      src={photo.url} 
+                      alt={photo.caption}
+                      className="w-full h-auto"
+                    />
+                    <p className="text-center mt-4 font-heading text-lg">{photo.caption}</p>
+                  </DialogContent>
+                </Dialog>
               ))}
             </div>
-            <p className="text-center text-sm mt-4 italic">Место для ваших совместных фотографий</p>
           </section>
 
           <Separator className="my-8 bg-black h-0.5" />
@@ -138,6 +186,31 @@ const Index = () => {
                 </div>
               ))}
             </div>
+          </section>
+
+          <Separator className="my-8 bg-black h-0.5" />
+
+          <section className="mb-8 animate-fade-in">
+            <h3 className="text-3xl font-heading font-bold mb-6 text-center border-y-2 border-black py-3">
+              ВИДЕОПОЗДРАВЛЕНИЯ
+            </h3>
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card className="p-6 border-2 border-black shadow-none rounded-none">
+                <div className="aspect-video bg-gray-200 border-2 border-black mb-4 flex items-center justify-center cursor-pointer hover:bg-gray-300 transition-colors"
+                     onClick={() => setSelectedVideo('video1')}>
+                  <Icon name="Play" size={48} className="text-black" />
+                </div>
+                <p className="text-center font-heading font-semibold text-lg">Видео от Екатерины</p>
+              </Card>
+              <Card className="p-6 border-2 border-black shadow-none rounded-none">
+                <div className="aspect-video bg-gray-200 border-2 border-black mb-4 flex items-center justify-center cursor-pointer hover:bg-gray-300 transition-colors"
+                     onClick={() => setSelectedVideo('video2')}>
+                  <Icon name="Play" size={48} className="text-black" />
+                </div>
+                <p className="text-center font-heading font-semibold text-lg">Видео от семьи</p>
+              </Card>
+            </div>
+            <p className="text-center text-sm mt-4 italic">Загрузите свои видеопоздравления</p>
           </section>
 
           <div className="text-center py-8 border-t-4 border-black mt-8">
